@@ -1,12 +1,27 @@
 import {StyleSheet, Text, View, StatusBar} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppButton, FormInput} from '../../../components';
+import socket from '../../../socket';
 
 const RoomScreen = props => {
   const [state, setState] = useState({
     name: '',
     chatRoom: '',
   });
+
+  useEffect(() => {
+    socket.off('joinChatRoom').on('joinChatRoom', data => {
+      // console.log('Data', data);
+      // setMessages(data.messages);
+      props.navigation.navigate('chatScreen', {
+        chatRoom: state.chatRoom,
+        data: data,
+      });
+    });
+  }, []);
+  const onJoinRoomHandler = () => {
+    socket.emit('joinChatRoom', {chatRoom: state.chatRoom, name: state.name});
+  };
   return (
     <>
       <StatusBar translucent={true} backgroundColor={'transparent'} />
@@ -56,10 +71,13 @@ const RoomScreen = props => {
               marginTop: 10,
             }}>
             <AppButton
+              disabled={
+                state.name == '' || state.chatRoom === '' ? true : false
+              }
               label={'Create Room'}
               text="Create Room"
               onPress={() => {
-                props.navigation.navigate('chatRoom');
+                onJoinRoomHandler();
               }}
             />
           </View>

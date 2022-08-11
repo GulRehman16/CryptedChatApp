@@ -22,11 +22,13 @@ const AppButton = ({
   text,
   brder1,
   backgroundColor,
+  disabled,
 }) => {
   const icon = iconL || iconR;
 
   return (
     <TouchableOpacity
+      disabled={disabled}
       onPress={onPress}
       activeOpacity={0.7}
       style={

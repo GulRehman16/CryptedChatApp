@@ -1,39 +1,61 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
-
+import socket from '../../../socket';
 const ChatScreen = props => {
+  const roomName = props?.route?.params.chatRoom;
+  const data = props?.route?.params?.data;
+  // console.log(roomName, data);
   const [messages, setMessages] = useState([]);
 
+  // useEffect(() => {
+  //   setMessages([
+  //     {
+  //       _id: 1,
+  //       text: 'Hello developer',
+  //       createdAt: new Date(),
+  //       user: {
+  //         _id: 2,
+  //         name: 'React Native',
+  //         avatar: 'https://placeimg.com/140/140/any',
+  //       },
+  //     },
+  //     {
+  //       _id: 2,
+  //       text: 'Hello developer',
+  //       createdAt: new Date(),
+  //       user: {
+  //         _id: 2,
+  //         name: 'React Native',
+  //         avatar: 'https://placeimg.com/140/140/any',
+  //       },
+  //     },
+  //   ]);
+  // }, []);
+
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 2,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ]);
+    data.map(item => {
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, item),
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.off('chat').on('chat', message => {
+      console.log('Message', message);
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, message),
+      );
+    });
   }, []);
 
   const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
-    );
+    console.log('room', roomName);
+    socket.emit('chat', {chatRoom: roomName, text: messages[0].text});
+    // setMessages(previousMessages =>
+    //   GiftedChat.append(previousMessages, messages),
+    // );
   }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
