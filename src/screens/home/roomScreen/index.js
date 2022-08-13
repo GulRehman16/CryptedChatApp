@@ -77,6 +77,8 @@ const RoomScreen = props => {
               text="Create Room"
               onPress={() => {
                 onJoinRoomHandler();
+                props.navigation.navigate('chatScreen');
+
               }}
             />
           </View>
