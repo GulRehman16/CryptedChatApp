@@ -4,8 +4,9 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import socket from '../../../socket';
 const ChatScreen = props => {
   const roomName = props?.route?.params.chatRoom;
-  const data = props?.route?.params?.data;
-  // console.log(roomName, data);
+  const data = props?.route?.params?.params.data;
+  console.log('room', data[0].chatRoom);
+  const room = data[0].chatRoom;
   const [messages, setMessages] = useState([]);
 
   // useEffect(() => {
@@ -51,8 +52,8 @@ const ChatScreen = props => {
   }, []);
 
   const onSend = useCallback((messages = []) => {
-    console.log('room', roomName);
-    socket.emit('chat', {chatRoom: roomName, text: messages[0].text});
+    console.log('room', room);
+    socket.emit('chat', {chatRoom: room, text: messages[0].text});
     // setMessages(previousMessages =>
     //   GiftedChat.append(previousMessages, messages),
     // );

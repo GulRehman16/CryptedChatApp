@@ -11,11 +11,10 @@ const RoomScreen = props => {
 
   useEffect(() => {
     socket.off('joinChatRoom').on('joinChatRoom', data => {
-      // console.log('Data', data);
+      console.log('Data', data);
       // setMessages(data.messages);
       props.navigation.navigate('chatScreen', {
-        chatRoom: state.chatRoom,
-        data: data,
+        params: {chatRoom: state.chatRoom, data: data},
       });
     });
   }, []);
